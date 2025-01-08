@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "414618685210",
+    "project_id": "chatdb-122ad",
+    "storage_bucket": "chatdb-122ad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414618685210:android:80b5f8a41713630237e6a3",
+        "android_client_info": {
+          "package_name": "com.example.jla"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrAbVkh5KNTVRE3l9zuS5xckU4dzwJ4Bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
