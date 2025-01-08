@@ -79,8 +79,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .padding(bottom = 10.dp)
-                .weight(.8f)
+                .weight(1f)
         ) {
             Box(
                 modifier = Modifier
@@ -149,15 +148,20 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
         //end of name and profile picture
 
         HorizontalDivider()
-        Text(
+        Box(
             modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .padding(horizontal = 20.dp)
                 .weight(.4f),
-            text = "To work in challenging environment that would lead to the fulfillment of " +
-                    "both corporate and personal goals.",
-            fontStyle = FontStyle.Italic,
-            textAlign = TextAlign.Center,
-        )
+        ) {
+            Text(
+
+                text = "I seek a role where I can apply my skills as an Android Developer, contribute to organizational goals, " +
+                        "and grow through collaboration and continuous learning.",
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center,
+            )
+        }
+
         HorizontalDivider()
 
         //start of 1st row options
@@ -165,11 +169,10 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
-                .weight(1f),
+                .weight(.9f),
             verticalAlignment = Alignment.CenterVertically
 
         ) {
-
             Spacer(
                 modifier = Modifier
                     .width(10.dp)
@@ -240,7 +243,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
-                .weight(1f)
+                .weight(.9f)
                 .fillMaxHeight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
