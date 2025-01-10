@@ -41,7 +41,3 @@ val app = module {
     viewModelOf(::ChatViewModel)
 
 }
-
-val useCases = module {
-
-}

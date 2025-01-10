@@ -68,7 +68,6 @@ fun MyApps(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 44.dp)
         ) {
             Column(
                 Modifier

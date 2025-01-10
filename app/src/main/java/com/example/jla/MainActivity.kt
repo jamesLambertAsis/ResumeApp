@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +45,8 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier
                             .imePadding()
-                            .navigationBarsPadding(),
+                            .navigationBarsPadding()
+                            .statusBarsPadding(),
                         navController = navController,
                         startDestination = NavigationItem.HomeScreen
                     ) {

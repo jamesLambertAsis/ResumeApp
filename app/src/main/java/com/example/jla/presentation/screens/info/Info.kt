@@ -27,27 +27,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jla.presentation.screens.info.composable.DotsElastic
+import com.example.jla.presentation.screens.info.composable.InfoItem
 
 @Composable
 fun Info(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .clickable { dismissScreen() }
+        .clickable { }
     ) {
         Column(
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.padding(horizontal = 10.dp)
         ) {
-            Row (
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Text(
-                    text = "Development Ongoing",
-                    fontSize = 24.sp
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                DotsElastic()
-            }
+
+              InfoItem(
+                  uniCodeIcon = "\uD83D\uDCF1",
+                  label = "AppName",
+                  text = "James Resume App"
+              )
+//
+//            Row (
+//                verticalAlignment = Alignment.Bottom
+//            ) {
+//                Text(
+//                    text = "Development Ongoing",
+//                    fontSize = 24.sp
+//                )
+//                Spacer(modifier = Modifier.width(4.dp))
+//                //DotsElastic()
+//            }
         }
     }
 }
