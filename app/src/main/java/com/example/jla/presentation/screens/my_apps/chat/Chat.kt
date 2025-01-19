@@ -60,7 +60,6 @@ fun Chat(
         modifier = Modifier
             .imePadding()
     ) {
-        Spacer(modifier = Modifier.height(40.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
