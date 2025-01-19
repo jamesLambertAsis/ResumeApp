@@ -133,11 +133,6 @@ fun SkillSets(
                 .background(Color(0xFF3F8EFC))
                 .fillMaxWidth()
             )
-            Spacer(modifier = Modifier
-                .height(2.dp)
-                .background(Color.Black)
-                .fillMaxWidth()
-            )
         }
         Text(
             buildAnnotatedString {
