@@ -39,7 +39,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build APK
-        run: ./gradlew -p app assemble debug
+        run: ./gradlew -p app assembleDebug
 
       - name: List APK Output
         run: ls -lh app/build/outputs/apk/debug
