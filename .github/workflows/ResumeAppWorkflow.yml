@@ -38,6 +38,7 @@ jobs:
       - name: Grant execute permission to gradle
         run: chmod +x ./gradlew
 
+      #Check directory
       - name: Print working directory
         run: pwd
 
