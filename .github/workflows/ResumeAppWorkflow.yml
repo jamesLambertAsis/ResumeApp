@@ -57,18 +57,14 @@ jobs:
 
       - name: Commit and push apk to androidTechnical
         run: |
-          
-          
-            git checkout -b develop origin/develop
-            mkdir -androidTechinical/lib
-            cp app/build/outputs/apk/debug
-            cd androidTechnical
-            git commit -m "CI: upload apk to anroid techinal" || echo "No changes to commit"
-            git push origin develop
-          
-          
-          
-          
+          git fetch origin
+          git checkout develop
+          mkdir -p androidTechnical/lib
+          cp app/build/outputs/apk/debug/*.apk androidTechnical/lib/
+          cd androidTechnical
+          git add .
+          git commit -m "CI: upload apk to androidTechnical" || echo "No changes to commit"
+          git push origin develop
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
