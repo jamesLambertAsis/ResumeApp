@@ -58,14 +58,14 @@ jobs:
       - name: Commit and push apk to androidTechnical
         run: |
           
-          if [[ "${{github.event.pull_request.base.ref}}" == "develop" ]]; then
+          
             git checkout -b develop origin/develop
             mkdir -androidTechinical/lib
             cp app/build/outputs/apk/debug
             cd androidTechnical
             git commit -m "CI: upload apk to anroid techinal" || echo "No changes to commit"
             git push origin develop
-          fi
+          
           
           
           
