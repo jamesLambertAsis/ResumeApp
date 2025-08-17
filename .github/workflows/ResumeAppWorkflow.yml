@@ -8,7 +8,7 @@ on:
 #  push:
 #    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "develop" ]
 
 defaults:
   run:
@@ -47,6 +47,28 @@ jobs:
 
       - name: List APK Output
         run: ls -lh app/build/outputs/apk/debug
+
+      - name: Clone target repository
+        run: |
+          git config --global user.name "github-action"
+          git config --global user.email "ci@github-action"
+          git clone https://x-access-token:${{ secrets.PAT }}@github.com/jamesLambertAsis/androidTechnical.git
+          ls androidTechnical
+
+      - name: Commit and push apk to androidTechnical
+        run: |
+          
+          if [[ "${{github.event.pull_request.base.ref}}" == "develop" ]]; then
+            git checkout -b develop origin/develop
+            mkdir -androidTechinical/lib
+            cp app/build/outputs/apk/debug
+            cd androidTechnical
+            git commit -m "CI: upload apk to anroid techinal" || echo "No changes to commit"
+            git push origin develop
+          fi
+          
+          
+          
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
