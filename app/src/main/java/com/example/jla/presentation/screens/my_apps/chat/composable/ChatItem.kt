@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jla.domain.model.Chat
+import com.example.jla.ui.theme.PaleSkyBlue
+import com.example.jla.ui.theme.ShadeBlue
 
 @Composable
 fun ChatItem(modifier: Modifier, alignment: Alignment.Horizontal, chat: Chat, isOwnChat: Boolean) {
@@ -57,7 +59,7 @@ fun ChatItem(modifier: Modifier, alignment: Alignment.Horizontal, chat: Chat, is
                 Box(
                     modifier = Modifier
                         .clip(shape = CircleShape)
-                        .background(Color(0xFFADD7F6), shape = CircleShape)
+                        .background(Color(PaleSkyBlue.value), shape = CircleShape)
                         .size(30.dp)
                 ) {
                     Text(
@@ -79,7 +81,7 @@ fun ChatItem(modifier: Modifier, alignment: Alignment.Horizontal, chat: Chat, is
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
                     .background(
-                        if (isOwnChat) Color(0xFF3F8EFC) else Color.Gray
+                        if (isOwnChat) Color(ShadeBlue.value) else Color.Gray
                     )
                     .padding(8.dp)
                     .wrapContentWidth(),

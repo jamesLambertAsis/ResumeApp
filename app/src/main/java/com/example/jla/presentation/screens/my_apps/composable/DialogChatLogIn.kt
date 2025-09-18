@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.jla.ui.theme.IndigoBlue
 
 @Composable
 fun DialogChatLogIn(
@@ -232,7 +233,7 @@ fun DialogChatLogIn(
                         .padding(10.dp),
                     text = "LogIn",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF3B28CC)
+                    color = Color(IndigoBlue.value)
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))

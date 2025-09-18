@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jla.ui.theme.BabyBlue
 
 @Composable
 fun MyAppsItem(
@@ -38,7 +39,7 @@ fun MyAppsItem(
                 indication = null
             ) { onClick() }
             .clip(shape = RoundedCornerShape(20.dp))
-            .background(Color(0xFF87BFFF))
+            .background(Color(BabyBlue.value))
             .fillMaxHeight(.7f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -63,7 +64,7 @@ fun MyAppsItem(
         ) {
             Text(
                 text = item,
-                color = Color(0xFF87BFFF),
+                color = Color(BabyBlue.value),
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
             )
