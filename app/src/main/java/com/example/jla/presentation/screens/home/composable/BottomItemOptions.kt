@@ -10,11 +10,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.jla.presentation.utils.HomeOptions
 
 @Composable
 fun BottomItemOptions(modifier: Modifier = Modifier, onClick: (String) -> Unit) {
     val listState = rememberLazyListState()
-    val itemList = listOf("Resume", "Skill Sets", "My Apps", "Info")
+    val itemList = listOf(HomeOptions.MY_RESUME, HomeOptions.SKILLS_TOOLS, HomeOptions.PROJECTS, HomeOptions.INFO)
     val selectedOption = remember {
         mutableStateOf("")
     }
@@ -25,8 +26,8 @@ fun BottomItemOptions(modifier: Modifier = Modifier, onClick: (String) -> Unit) 
             state = listState
         ) {
             item {
-                itemList.forEachIndexed { index, item ->
-                    BottomRowItem(text = item, isSelected = itemList[index] == selectedOption.value){
+                itemList.forEachIndexed { _, item ->
+                    BottomRowItem(text = item){
                         selectedOption.value = it
                         onClick(it)
                     }
