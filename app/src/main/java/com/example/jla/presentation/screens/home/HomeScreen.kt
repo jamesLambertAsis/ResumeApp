@@ -2,23 +2,16 @@ package com.example.jla.presentation.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,16 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jla.R
-import com.example.jla.domain.model.User
 import com.example.jla.presentation.screens.home.composable.BottomItemOptions
-import com.example.jla.presentation.screens.home.composable.BottomRowItem
-import com.example.jla.presentation.screens.my_apps.chat.ChatViewModel
+import com.example.jla.ui.theme.ShadeBlue
 import kotlinx.coroutines.flow.drop
-import org.koin.androidx.compose.koinViewModel
-import java.sql.Timestamp
 
 @Composable
-fun Home(
+fun HomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     navigate: (String) -> Unit,
@@ -54,7 +43,6 @@ fun Home(
             .collect {
                 navController.popBackStack()
             }
-
     }
     Box(
         modifier = Modifier.fillMaxSize()
@@ -62,15 +50,15 @@ fun Home(
         Column {
             Box(
                 modifier = Modifier
-                    .weight(1.5f)
+                    .weight(1.2f)
                     .fillMaxSize()
                     .clip(shape = RoundedCornerShape(0.dp, 0.dp, 100.dp, 0.dp))
-                    .background(Color(0xFF3F8EFC)),
+                    .background(ShadeBlue),
             ) {
                 Text(
                     modifier = modifier
                         .align(Alignment.CenterStart)
-                        .padding(start = 30.dp, bottom = 150.dp),
+                        .padding(start = 30.dp, bottom = 130.dp, top = 80.dp),
                     text = "Hi!",
                     fontSize = 60.sp,
                     fontFamily = FontFamily.SansSerif,
@@ -80,37 +68,35 @@ fun Home(
                 Image(
                     modifier = modifier
                         .fillMaxSize()
+                        .padding()
+                        .padding(start = 120.dp) //margin
                         .align(Alignment.CenterEnd),
-                    painter = painterResource(id = R.drawable.sample_profile_no_bg),
+                    painter = painterResource(id = R.drawable.sample_profile_no_bg_1x1),
                     contentDescription = null
                 )
 
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 14.dp),
-                    text = "James Lambert O. Asis",
-                    fontSize = 30.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    color = Color.Black
-
-                )
             }
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 20.dp, top = 20.dp, end = 20.dp)
+                    .padding(start = 20.dp, top = 14.dp, end = 20.dp)
             ) {
                 Text(
-                    text = "What does this contains?",
+                    text = "James Lambert O. Asis",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "What does this contain?",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(14.dp))
                 Text(
-                    text = "This app's contents are achievements, project handled and personal information about the developer. " +
-                            "This also contains the information on tech stack, tools and architecture used in developing this app.",
-                    fontSize = 18.sp,
+                    text = "This app includes the developer's achievements, handled projects, and personal information. It also highlights the technologies, tools, and architecture used in building this application.",
+                    fontSize = 16.sp,
                     textAlign = TextAlign.Justify,
                     fontStyle = FontStyle.Italic,
                 )
@@ -119,7 +105,7 @@ fun Home(
             Column(
                 modifier = Modifier
                     .weight(1.3f)
-                    .padding(start = 14.dp, end = 14.dp)
+                    .padding(start = 14.dp, end = 14.dp, top = 30.dp),
             ) {
                 Text(
                     text = "About Me",
