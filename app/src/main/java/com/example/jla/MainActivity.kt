@@ -2,32 +2,26 @@ package com.example.jla
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.jla.presentation.screens.home.Home
+import com.example.jla.presentation.screens.home.HomeScreen
 import com.example.jla.presentation.screens.info.Info
 import com.example.jla.presentation.screens.my_apps.MyApps
 import com.example.jla.presentation.screens.my_apps.chat.Chat
-import com.example.jla.presentation.screens.my_apps.utils.ChatUtils
-import com.example.jla.presentation.screens.resume.Resume
-import com.example.jla.presentation.screens.skill_sets.SkillSets
+import com.example.jla.presentation.screens.resume.ResumeScreen
+import com.example.jla.presentation.screens.skill_sets.SkillSetScreen
 import com.example.jla.presentation.screens.splash_screen.SplashScreen
+import com.example.jla.presentation.utils.HomeOptions
 import com.example.jla.ui.theme.JLATheme
 import kotlinx.serialization.Serializable
 
@@ -51,26 +45,24 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationItem.HomeScreen
                     ) {
                         composable<NavigationItem.HomeScreen> {
-                            Home(
+                            HomeScreen(
                                 navController
                             ){
                                 navController.navigate(
                                     when(it) {
-                                        "Resume" -> NavigationItem.ResumeScreen
-                                        "Skill Sets" -> NavigationItem.SkillSetsScreen
-                                        "My Apps" -> NavigationItem.MyApps
+                                        HomeOptions.MY_RESUME -> NavigationItem.ResumeScreen
+                                        HomeOptions.SKILLS_TOOLS -> NavigationItem.SkillSetsScreen
+                                        HomeOptions.PROJECTS -> NavigationItem.MyApps
                                         else -> { NavigationItem.Info }
                                     }
                                 )
                             }
                         }
                         composable<NavigationItem.SkillSetsScreen> {
-                            SkillSets(){
-                                navController.navigate(NavigationItem.HomeScreen)
-                            }
+                            SkillSetScreen()
                         }
                         composable<NavigationItem.ResumeScreen> {
-                            Resume(){
+                            ResumeScreen{
                                 navController.navigate(NavigationItem.HomeScreen)
                             }
                         }
@@ -85,12 +77,12 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable<NavigationItem.Info> {
-                            Info(){
+                            Info{
                                 navController.popBackStack()
                             }
                         }
                         composable<NavigationItem.ChatScreen> {
-                            Chat(){
+                            Chat{
                                 navController.popBackStack()
                             }
                         }

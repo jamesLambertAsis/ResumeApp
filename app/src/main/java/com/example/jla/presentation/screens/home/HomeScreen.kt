@@ -31,7 +31,7 @@ import com.example.jla.ui.theme.ShadeBlue
 import kotlinx.coroutines.flow.drop
 
 @Composable
-fun Home(
+fun HomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     navigate: (String) -> Unit,

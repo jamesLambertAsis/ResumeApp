@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,19 +46,17 @@ import com.example.jla.presentation.screens.resume.composable.MoreInfoDialog
 import com.example.jla.presentation.screens.resume.composable.PersonalInfoContent
 import com.example.jla.presentation.screens.resume.composable.PersonalTraitContent
 import com.example.jla.presentation.screens.resume.composable.WorkExperienceContent
+import com.example.jla.ui.theme.IndigoBlue
+import com.example.jla.ui.theme.PaleSkyBlue
+import com.example.jla.ui.theme.RoyalBlue
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
+fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
-                detectHorizontalDragGestures { _, _ ->
-                    dismissScreen()
-                }
-            }
     ) {
         val dialogTitle = remember {
             mutableStateOf("")
@@ -78,15 +74,31 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(250.dp)
-                .weight(1f)
+                .weight(.7f)
         ) {
+            Icon(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(20.dp)
+                    .size(30.dp)
+                    .border(width = 1.dp, color = Color.DarkGray)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null
+                    ) {
+                        dismissScreen()
+                    },
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = Color.Gray
+            )
             Box(
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(230.dp)
-                    .clip(shape = RoundedCornerShape(0.dp, 350.dp, 350.dp, 0.dp))
-                    .background(Color(0xFF3B28CC)),
+                    .width(190.dp)
+                    .fillMaxHeight()
+                    .clip(shape = CircleShape)
+                    .align(Alignment.BottomStart)
+                    .background(Color(IndigoBlue.value)),
             ) {
                 Box(
                     modifier = Modifier
@@ -109,11 +121,11 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             }
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(.8f)
                     .height(100.dp)
-                    .align(Alignment.CenterEnd)
+                    .align(Alignment.BottomEnd)
                     .padding(end = 10.dp)
-                    .background(Color(0xFF3B28CC))
+                    .background(Color(IndigoBlue.value))
                     .zIndex(-1f),
                 verticalArrangement = Arrangement.Center
             ) {
@@ -122,16 +134,16 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                         withStyle(
                             style = SpanStyle(
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
+                                fontSize = 30.sp,
                                 color = Color.White
                             )
                         ) {
-                            append("James Lambert O. Asis \n")
+                            append("James Asis \n")
                         }
                         withStyle(
                             style = SpanStyle(
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp,
+                                fontSize = 14.sp,
                                 color = Color.White
                             )
                         ) {
@@ -147,6 +159,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
         }
         //end of name and profile picture
 
+        Spacer(Modifier.height(16.dp))
         HorizontalDivider()
         Box(
             modifier = Modifier
@@ -181,7 +194,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                 modifier
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
-                    .background(Color(0xFFADD7F6))
+                    .background(Color(PaleSkyBlue.value))
                     .padding(30.dp)
                     .fillMaxHeight(.8f)
                     .clickable(
@@ -210,7 +223,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                 modifier
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
-                    .background(Color(0xFF2667FF))
+                    .background(Color(RoyalBlue.value))
                     .padding(26.dp)
                     .fillMaxHeight(.8f)
                     .clickable(
@@ -255,7 +268,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                 modifier
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
-                    .background(Color(0xFF2667FF))
+                    .background(Color(RoyalBlue.value))
                     .padding(26.dp)
                     .fillMaxHeight(.8f)
                     .clickable(
@@ -285,7 +298,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                 modifier
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
-                    .background(Color(0xFFADD7F6))
+                    .background(Color(PaleSkyBlue.value))
                     .padding(30.dp)
                     .fillMaxHeight(.8f)
             ) {
@@ -312,15 +325,6 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             )
         }//end of 2nd row options
 
-        Text(
-            modifier = Modifier
-                .padding(vertical = 2.dp)
-                .fillMaxWidth(),
-            text = "Swipe to exit",
-            fontStyle = FontStyle.Italic,
-            textAlign = TextAlign.Center
-        )
-
         if (showDialog.value) {
             MoreInfoDialog(
                 title = dialogTitle.value,
@@ -341,7 +345,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                                         top = 18.dp
                                     )
                                 )
-                                headerColor.value = Color(0xFFADD7F6)
+                                headerColor.value = Color(PaleSkyBlue.value)
                             }
 
                             ResumeOption.WORK_EXPERIENCE.name -> {
@@ -352,7 +356,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                                         top = 18.dp
                                     )
                                 )
-                                headerColor.value = Color(0xFF2667FF)
+                                headerColor.value = Color(RoyalBlue.value)
                             }
 
                             ResumeOption.PERSONAL_TRAIT.name -> {
@@ -363,7 +367,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                                         top = 18.dp
                                     )
                                 )
-                                headerColor.value = Color(0xFF2667FF)
+                                headerColor.value = Color(RoyalBlue.value)
                             }
 
                             ResumeOption.EDUCATION_HISTORY.name -> {
@@ -374,7 +378,7 @@ fun Resume(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                                         top = 18.dp
                                     )
                                 )
-                                headerColor.value = Color(0xFFADD7F6)
+                                headerColor.value = Color(PaleSkyBlue.value)
                             }
                         }
                         HorizontalDivider(
