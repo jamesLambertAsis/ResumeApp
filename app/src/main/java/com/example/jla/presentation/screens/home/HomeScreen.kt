@@ -36,7 +36,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navigate: (String) -> Unit,
 ) {
-
     LaunchedEffect(Unit) {
         snapshotFlow { }
             .drop(1)

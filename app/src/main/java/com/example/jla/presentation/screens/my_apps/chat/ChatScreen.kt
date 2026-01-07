@@ -1,7 +1,11 @@
 package com.example.jla.presentation.screens.my_apps.chat
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -29,13 +30,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jla.domain.model.Chat
+import com.example.jla.R
 import com.example.jla.presentation.screens.my_apps.chat.composable.ChatContent
+import com.example.jla.presentation.screens.my_apps.composable.CustomLoadingDialog
 import com.example.jla.presentation.screens.my_apps.utils.ChatUtils
+import com.example.jla.presentation.screens.my_apps.utils.ShowToast
+import com.example.jla.presentation.utils.NetworkMonitor
+import com.example.jla.ui.theme.ErrorRed
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -45,6 +53,10 @@ fun Chat(
     back: () -> Unit
 ) {
 
+    val context = LocalContext.current
+
+    val state = chatViewModel.state.collectAsState().value
+
     val message = remember {
         mutableStateOf("")
     }
@@ -52,8 +64,10 @@ fun Chat(
 
     val scrollState = rememberLazyListState()
 
+    val isOnline by NetworkMonitor(context).isOnline.collectAsState(initial = true)
+
     LaunchedEffect(chatList.size) {
-        if (chatList.isNotEmpty()) scrollState.animateScrollToItem(chatList.size - 1)
+        if (chatList.isNotEmpty()) scrollState.scrollToItem(chatList.size - 1)
     }
 
     Column(
@@ -68,12 +82,15 @@ fun Chat(
             Icon(
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable {
+                    .clickable(
+                        interactionSource = null,
+                        indication = null
+                    ) {
                         back()
                     }
                     .align(Alignment.CenterStart)
                     .padding(start = 14.dp),
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                painter = painterResource(R.drawable.ic_arrow_back),
                 contentDescription = null
             )
             Text(
@@ -82,6 +99,14 @@ fun Chat(
                 textAlign = TextAlign.Center,
                 fontSize = 26.sp
             )
+        }
+        if (isOnline.not()) {
+            Row(
+                Modifier.fillMaxWidth().padding(vertical = 4.dp).background(Color(ErrorRed.value)),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("No Connection", fontSize = 14.sp)
+            }
         }
         LazyColumn(
             modifier = Modifier
@@ -132,22 +157,40 @@ fun Chat(
                         .padding(end = 14.dp)
                         .size(30.dp)
                         .clickable {
-                            chatViewModel.sendChat(
-                                Chat(
-                                    timeSent = System.currentTimeMillis(),
-                                    userName = ChatUtils.loggedInUserName,
-                                    chat = message.value.trim()
-                                )
+                            chatViewModel.onEvent(
+                                ChatEvent.SendChat(message = message.value.trim())
                             )
+//                            message.value = "POyZGbTZMV0ze"
                             message.value = ""
-                        },
-                    imageVector = Icons.AutoMirrored.Filled.Send,
+                        }
+                        .scale(-1f),
+                    painter = painterResource(R.drawable.ic_arrow_back),
+//                    contentDescription = "asisjms72@gmail.com",
                     contentDescription = "",
                     tint = Color.Black
                 )
             }
+        }
+        when(state) {
+            is ChatUiState.Loading -> {
+                CustomLoadingDialog()
+            }
 
+            is ChatUiState.Error -> {
+                ShowToast(state.error)
+            }
+            ChatUiState.Idle -> Unit
+            ChatUiState.SuccessFetch -> Unit
+            ChatUiState.SuccessSend -> Unit
+            else -> Unit
         }
     }
 
+}
+
+fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }

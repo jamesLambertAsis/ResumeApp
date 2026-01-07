@@ -71,8 +71,11 @@ fun MyApps(
         ) {
             Column(
                 Modifier
-                    .padding(14.dp)
-                    .clickable {
+                    .padding(18.dp)
+                    .clickable(
+                        interactionSource = null,
+                        indication = null
+                    ) {
                         back()
                     }
             ) {
@@ -94,7 +97,7 @@ fun MyApps(
         ) {
 
             MyAppsItem(
-                item = "Message",
+                item = "Chats",
                 icon = painterResource(id = R.drawable.chat_bubbles_with_ellipsis),
                 modifier = Modifier.weight(1f)
             ) {
