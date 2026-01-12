@@ -35,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MyApps(
     myAppsViewModel: MyAppsViewModel = koinViewModel(),
     toChatScreen: () -> Unit,
+    toWebViewScreen: () -> Unit,
     back: () -> Unit
 ) {
 
@@ -108,7 +109,9 @@ fun MyApps(
                 item = "Web View",
                 icon = painterResource(id = R.drawable.internet),
                 modifier = Modifier.weight(1f)
-            )
+            ) {
+                toWebViewScreen()
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

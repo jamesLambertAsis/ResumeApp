@@ -149,7 +149,6 @@ fun Chat(
                 ),
                 maxLines = 3
             )
-            Spacer(modifier = Modifier.width(14.dp))
             if (message.value.trim().isNotEmpty()) {
                 Icon(
                     modifier = Modifier
