@@ -159,12 +159,10 @@ fun Chat(
                             chatViewModel.onEvent(
                                 ChatEvent.SendChat(message = message.value.trim())
                             )
-//                            message.value = "POyZGbTZMV0ze"
                             message.value = ""
                         }
                         .scale(-1f),
                     painter = painterResource(R.drawable.ic_arrow_back),
-//                    contentDescription = "asisjms72@gmail.com",
                     contentDescription = "",
                     tint = Color.Black
                 )
@@ -185,11 +183,4 @@ fun Chat(
         }
     }
 
-}
-
-fun isNetworkAvailable(context: Context): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val network = connectivityManager.activeNetwork ?: return false
-    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }

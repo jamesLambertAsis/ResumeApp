@@ -3,7 +3,6 @@ package com.example.jla.presentation.screens.my_apps.composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jla.ui.theme.BabyBlue
 import com.example.jla.ui.theme.IndigoBlue
-import com.example.jla.ui.theme.RoyalBlue
 
 @Composable
 fun MyAppsItem(
