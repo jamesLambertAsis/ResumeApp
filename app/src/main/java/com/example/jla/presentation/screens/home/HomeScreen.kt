@@ -36,7 +36,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navigate: (String) -> Unit,
 ) {
-
     LaunchedEffect(Unit) {
         snapshotFlow { }
             .drop(1)
@@ -104,11 +103,11 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(14.dp))
             Column(
                 modifier = Modifier
-                    .weight(1.3f)
+                    .weight(1.2f)
                     .padding(start = 14.dp, end = 14.dp, top = 30.dp),
             ) {
                 Text(
-                    text = "About Me",
+                    text = "More:",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
                 )

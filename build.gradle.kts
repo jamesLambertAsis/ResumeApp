@@ -5,4 +5,7 @@ plugins {
 
     // Add the dependency for the Google services Gradle plugin
     alias(libs.plugins.google.services) apply false
+
+    //compose
+    alias(libs.plugins.compose.compiler) apply false
 }

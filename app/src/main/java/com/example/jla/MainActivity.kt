@@ -18,6 +18,7 @@ import com.example.jla.presentation.screens.home.HomeScreen
 import com.example.jla.presentation.screens.info.Info
 import com.example.jla.presentation.screens.my_apps.MyApps
 import com.example.jla.presentation.screens.my_apps.chat.Chat
+import com.example.jla.presentation.screens.my_apps.web_view.WebView
 import com.example.jla.presentation.screens.resume.ResumeScreen
 import com.example.jla.presentation.screens.skill_sets.SkillSetScreen
 import com.example.jla.presentation.screens.splash_screen.SplashScreen
@@ -47,13 +48,15 @@ class MainActivity : ComponentActivity() {
                         composable<NavigationItem.HomeScreen> {
                             HomeScreen(
                                 navController
-                            ){
+                            ) {
                                 navController.navigate(
-                                    when(it) {
-                                        HomeOptions.MY_RESUME -> NavigationItem.ResumeScreen
+                                    when (it) {
+                                        HomeOptions.ABOUT_ME -> NavigationItem.ResumeScreen
                                         HomeOptions.SKILLS_TOOLS -> NavigationItem.SkillSetsScreen
                                         HomeOptions.PROJECTS -> NavigationItem.MyApps
-                                        else -> { NavigationItem.Info }
+                                        else -> {
+                                            NavigationItem.Info
+                                        }
                                     }
                                 )
                             }
@@ -62,7 +65,7 @@ class MainActivity : ComponentActivity() {
                             SkillSetScreen()
                         }
                         composable<NavigationItem.ResumeScreen> {
-                            ResumeScreen{
+                            ResumeScreen {
                                 navController.navigate(NavigationItem.HomeScreen)
                             }
                         }
@@ -71,18 +74,24 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<NavigationItem.MyApps> {
                             MyApps(
-                                toChatScreen = { navController.navigate(NavigationItem.ChatScreen) }
-                            ){
+                                toChatScreen = { navController.navigate(NavigationItem.ChatScreen) },
+                                toWebViewScreen = { navController.navigate(NavigationItem.WebView) }
+                            ) {
                                 navController.popBackStack()
                             }
                         }
                         composable<NavigationItem.Info> {
-                            Info{
+                            Info {
                                 navController.popBackStack()
                             }
                         }
                         composable<NavigationItem.ChatScreen> {
-                            Chat{
+                            Chat {
+                                navController.popBackStack()
+                            }
+                        }
+                        composable<NavigationItem.WebView> {
+                            WebView(){
                                 navController.popBackStack()
                             }
                         }
@@ -116,6 +125,9 @@ sealed class NavigationItem {
 
     @Serializable
     object ChatScreen
+
+    @Serializable
+    object WebView
 
 }
 

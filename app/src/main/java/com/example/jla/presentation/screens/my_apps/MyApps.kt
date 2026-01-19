@@ -35,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MyApps(
     myAppsViewModel: MyAppsViewModel = koinViewModel(),
     toChatScreen: () -> Unit,
+    toWebViewScreen: () -> Unit,
     back: () -> Unit
 ) {
 
@@ -71,8 +72,11 @@ fun MyApps(
         ) {
             Column(
                 Modifier
-                    .padding(14.dp)
-                    .clickable {
+                    .padding(18.dp)
+                    .clickable(
+                        interactionSource = null,
+                        indication = null
+                    ) {
                         back()
                     }
             ) {
@@ -94,7 +98,7 @@ fun MyApps(
         ) {
 
             MyAppsItem(
-                item = "Message",
+                item = "Chats",
                 icon = painterResource(id = R.drawable.chat_bubbles_with_ellipsis),
                 modifier = Modifier.weight(1f)
             ) {
@@ -105,7 +109,9 @@ fun MyApps(
                 item = "Web View",
                 icon = painterResource(id = R.drawable.internet),
                 modifier = Modifier.weight(1f)
-            )
+            ) {
+                toWebViewScreen()
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
