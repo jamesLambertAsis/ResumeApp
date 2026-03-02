@@ -121,7 +121,7 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             }
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(.8f)
+                    .fillMaxWidth(.75f)
                     .height(100.dp)
                     .align(Alignment.BottomEnd)
                     .padding(end = 10.dp)
@@ -138,7 +138,7 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                                 color = Color.White
                             )
                         ) {
-                            append("James Asis \n")
+                            append("James Asis\n")
                         }
                         withStyle(
                             style = SpanStyle(
@@ -195,7 +195,7 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
                     .background(Color(PaleSkyBlue.value))
-                    .padding(30.dp)
+
                     .fillMaxHeight(.8f)
                     .clickable(
                         interactionSource = MutableInteractionSource(),
@@ -208,7 +208,7 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
             ) {
                 Icon(
                     modifier = Modifier
-                        .size(150.dp)
+                        .size(120.dp)
                         .align(Alignment.Center),
                     painter = painterResource(id = R.drawable.ic_personal_info),
                     contentDescription = null,
@@ -224,7 +224,6 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
                     .background(Color(RoyalBlue.value))
-                    .padding(26.dp)
                     .fillMaxHeight(.8f)
                     .clickable(
                         interactionSource = MutableInteractionSource(),
@@ -269,7 +268,6 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
                     .background(Color(RoyalBlue.value))
-                    .padding(26.dp)
                     .fillMaxHeight(.8f)
                     .clickable(
                         interactionSource = MutableInteractionSource(),
@@ -299,21 +297,20 @@ fun ResumeScreen(modifier: Modifier = Modifier, dismissScreen: () -> Unit) {
                     .clip(shape = RoundedCornerShape(20.dp))
                     .weight(1f)
                     .background(Color(PaleSkyBlue.value))
-                    .padding(30.dp)
                     .fillMaxHeight(.8f)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null
+                    ) {
+                        dialogTitle.value = "Education History"
+                        showDialog.value = true
+                        showContentOption.value = ResumeOption.EDUCATION_HISTORY.name
+                    }
             ) {
                 Icon(
                     modifier = Modifier
-                        .size(150.dp)
-                        .align(Alignment.Center)
-                        .clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = null
-                        ) {
-                            dialogTitle.value = "Education History"
-                            showDialog.value = true
-                            showContentOption.value = ResumeOption.EDUCATION_HISTORY.name
-                        },
+                        .size(120.dp)
+                        .align(Alignment.Center),
                     painter = painterResource(id = R.drawable.ic_education_history),
                     contentDescription = null,
                     tint = Color.Black

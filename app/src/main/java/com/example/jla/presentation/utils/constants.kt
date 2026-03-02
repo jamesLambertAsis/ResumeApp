@@ -1,7 +1,7 @@
 package com.example.jla.presentation.utils
 
 object HomeOptions {
-    const val MY_RESUME = "My Resume"
+    const val ABOUT_ME = "About Me"
     const val SKILLS_TOOLS = "Skills & Tools"
     const val PROJECTS = "Projects"
     const val INFO = "Info"

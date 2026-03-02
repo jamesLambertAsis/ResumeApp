@@ -32,7 +32,7 @@ fun BottomRowItem(
     clicked: (String) -> Unit
 ) {
     val icon = when (text) {
-        HomeOptions.MY_RESUME -> R.drawable.ic_document
+        HomeOptions.ABOUT_ME -> R.drawable.ic_document
         HomeOptions.SKILLS_TOOLS -> R.drawable.ic_tools
         HomeOptions.PROJECTS -> R.drawable.ic_application
         else -> R.drawable.ic_info

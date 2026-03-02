@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jla.ui.theme.BabyBlue
+import com.example.jla.ui.theme.IndigoBlue
 
 @Composable
 fun MyAppsItem(
@@ -58,13 +59,13 @@ fun MyAppsItem(
                 .weight(.6f)
                 .padding(top = 30.dp)
                 .fillMaxWidth()
-                .background(Color.Black),
+                .background(Color(IndigoBlue.value)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = item,
-                color = Color(BabyBlue.value),
+                color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
             )

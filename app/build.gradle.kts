@@ -1,18 +1,22 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.compose.compiler)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
     namespace = "com.example.jla"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.jla"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -42,11 +46,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8) // Or JvmTarget.JVM_11, JvmTarget.JVM_17, etc.
+        }
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -56,6 +63,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
 }
 
 dependencies {
@@ -68,10 +77,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -86,12 +91,38 @@ dependencies {
     //firebase
     implementation(libs.firebase.analytics)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore.ktx)
 
     //koin
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.androidx.compose.navigation)
 
     implementation (libs.barcode.scanning)
-    implementation (libs.androidx.camera.camera2)
+
+//    implementation("com.google.android.gms:play-services-maps:17.0.0")
+//    implementation("com.google.maps.android:maps-compose:6.12.0")
+//
+//    // Google Maps SDK -- these are here for the data model.  Remove these dependencies and replace
+//    // with the compose versions.
+//    implementation("com.google.android.gms:play-services-maps:18.2.0")
+//    // KTX for the Maps SDK for Android library
+//    implementation("com.google.maps.android:maps-ktx:5.0.0")
+//    // KTX for the Maps SDK for Android Utility Library
+//    implementation("com.google.maps.android:maps-utils-ktx:5.0.0")
+
+    val mapsComposeVersion = "4.4.1"
+    implementation("com.google.maps.android:maps-compose:$mapsComposeVersion")
+    // Google Maps Compose utility library
+    implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
+    // Google Maps Compose widgets library
+    implementation("com.google.maps.android:maps-compose-widgets:$mapsComposeVersion")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 
 }

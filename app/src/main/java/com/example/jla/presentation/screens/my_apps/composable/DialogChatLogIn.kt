@@ -16,9 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -33,13 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.jla.R
 import com.example.jla.ui.theme.IndigoBlue
 
 @Composable
@@ -90,6 +90,7 @@ fun DialogChatLogIn(
                     modifier = Modifier.align(Alignment.Center),
                     text = "Welcome to Chats!",
                     fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
                     color = Color.Black
                 )
             }
@@ -108,7 +109,7 @@ fun DialogChatLogIn(
                 leadingIcon = {
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.Phone,
+                        painter = painterResource(R.drawable.ic_phone),
                         contentDescription = null,
                         tint = Color.Black
                     )
@@ -144,7 +145,7 @@ fun DialogChatLogIn(
                 leadingIcon = {
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.Person,
+                        painter = painterResource(R.drawable.ic_account),
                         contentDescription = null,
                         tint = Color.Black,
                     )

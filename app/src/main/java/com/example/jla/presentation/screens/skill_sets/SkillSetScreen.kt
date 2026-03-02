@@ -47,7 +47,7 @@ fun SkillSetScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(ShadeBlue)
-                        .fillMaxHeight(.75f)
+                        .fillMaxHeight(.65f)
                 )
                 Box(
                     modifier = modifier

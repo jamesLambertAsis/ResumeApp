@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jla.R
-import com.example.jla.presentation.screens.resume.composable.BulletedItem
 import com.example.jla.presentation.utils.SkillAndroidList
 import com.example.jla.presentation.utils.SkillDatabaseList
 import com.example.jla.presentation.utils.SkillSet
@@ -75,7 +72,7 @@ fun SkillSetItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
                 Icon(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(if (isSelected) 40.dp else 30.dp),
+                        .size(if (isSelected) 50.dp else 30.dp),
                     painter = painterResource(icon),
                     tint = if (ThemeUtils.isDarkMode()) Color.Black else Color.White,
                     contentDescription = null
@@ -96,7 +93,7 @@ fun SkillSetItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
             )
 
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                painter = if(isSelected) painterResource(R.drawable.ic_caret_down) else painterResource(R.drawable.ic_caret_right),
                 contentDescription = null
             )
 

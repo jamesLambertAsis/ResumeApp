@@ -15,7 +15,7 @@ import com.example.jla.presentation.utils.HomeOptions
 @Composable
 fun BottomItemOptions(modifier: Modifier = Modifier, onClick: (String) -> Unit) {
     val listState = rememberLazyListState()
-    val itemList = listOf(HomeOptions.MY_RESUME, HomeOptions.SKILLS_TOOLS, HomeOptions.PROJECTS, HomeOptions.INFO)
+    val itemList = listOf(HomeOptions.ABOUT_ME, HomeOptions.SKILLS_TOOLS, HomeOptions.PROJECTS, HomeOptions.INFO)
     val selectedOption = remember {
         mutableStateOf("")
     }
