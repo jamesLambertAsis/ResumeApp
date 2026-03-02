@@ -18,6 +18,8 @@ object ThemeUtils {
     }
 }
 
+
+
 class NetworkMonitor(context: Context) {
 
     private val connectivityManager =

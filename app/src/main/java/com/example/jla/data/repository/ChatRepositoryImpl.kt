@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.jla.core.TaskResult
+import com.example.jla.data.remote.model.ApiResponse
 import com.example.jla.domain.model.Chat
 import com.example.jla.domain.repository.ChatRepository
 import com.google.firebase.Firebase
@@ -13,16 +14,15 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
 
-class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatRepository {
+class ChatRepositoryImpl(db: Firebase) : ChatRepository {
 
     private val firestoreDb = db.firestore
     private val chatDocs = firestoreDb.collection("Chats")
 
-    override fun getChats(): Flow<TaskResult<List<Chat>>> = callbackFlow {
+    override fun getChats(hasConnection: Boolean): Flow<TaskResult<List<Chat>>> = callbackFlow {
 
         trySend(TaskResult.Loading)
 
@@ -35,7 +35,7 @@ class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatReposi
                     close(error)
                     return@addSnapshotListener
                 }
-                if (isNetworkAvailable()){
+                if (hasConnection) {
                     val batch = firestoreDb.batch()
                     querySnapshot.documents.forEach { doc ->
                         val sent = doc.getBoolean("sent") ?: false
@@ -56,13 +56,14 @@ class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatReposi
         }
     }
 
-    override fun sendChat(message: String): Flow<TaskResult<Unit>> = flow {
+    override fun resendFailedChats(): Flow<TaskResult<List<Chat>>> = callbackFlow{
 
-        emit(TaskResult.Loading)
+    }
+
+    override suspend fun sendChat(message: String): ApiResponse<Boolean, Exception> {
         val docRef = chatDocs.document()
         val chat = Chat(id = docRef.id, chat = message, sending = true)
-
-        try {
+        return try {
             withTimeout(30_000) {
                 docRef.set(chat).await()
                 docRef.update(
@@ -71,7 +72,7 @@ class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatReposi
                         "sent" to true
                     )
                 ).await()
-                emit(TaskResult.Success(Unit))
+                ApiResponse.Success(data = true)
             }
         } catch (e: TimeoutCancellationException) {
             // Timed out after 30 seconds
@@ -81,7 +82,7 @@ class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatReposi
                     "sent" to false
                 )
             )
-            emit(TaskResult.Error(errorMessage = e.message ?:"Request timed out"))
+            return ApiResponse.Error(e, e.message)
 
         } catch (e: Exception) {
             docRef.update(
@@ -90,14 +91,18 @@ class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatReposi
                     "sent" to false
                 )
             )
-            emit(TaskResult.Error(errorMessage = e.message ?: "Unknown error"))
+            return ApiResponse.Error(e, e.message)
         }
     }
 
-    override fun updateChat(docRef: String, message: String): Flow<TaskResult<Unit>> = flow {
-        emit(TaskResult.Loading)
+    override suspend fun updateChat(
+        docRef: String,
+        message: String
+    ): ApiResponse<Boolean, Exception> {
+
         val docRef = chatDocs.document(docRef)
-        try {
+
+        return try {
             withTimeout(30_000) {
                 docRef.update(
                     mapOf(
@@ -105,21 +110,15 @@ class ChatRepositoryImpl(db: Firebase, private val app: Application): ChatReposi
                         "edited" to true
                     )
                 ).await()
-                emit(TaskResult.Success(Unit))
+                ApiResponse.Success(true)
             }
-
         } catch (e: TimeoutCancellationException) {
-            emit(TaskResult.Error(errorMessage = e.message ?:"Request timed out"))
+            ApiResponse.Error(e, errorMessage = e.message)
 
         } catch (e: Exception) {
-            emit(TaskResult.Error(errorMessage = e.message ?: "Unknown error"))
+            ApiResponse.Error(e, e.message)
         }
     }
 
-    fun isNetworkAvailable(): Boolean {
-        val connectivityManager = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-    }
+
 }

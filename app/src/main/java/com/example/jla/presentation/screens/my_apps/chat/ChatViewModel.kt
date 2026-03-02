@@ -6,27 +6,25 @@ import com.example.jla.domain.model.Chat
 import com.example.jla.domain.use_case.chat.ChatUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 class ChatViewModel(
     private val chatUseCase: ChatUseCase
 ): BaseViewModel<ChatUiState>(ChatUiState.Idle) {
 
-    private val _chats = MutableStateFlow<List<Chat>>(emptyList())
-    val chats = _chats.asStateFlow()
 
     init {
         run {
-            chatUseCase.getChats().collect { result ->
+            chatUseCase.getChats().distinctUntilChanged().collect { result ->
                 when (result) {
                     is TaskResult.Error<*> -> {
-                        _state.value = ChatUiState.Error(result.errorMessage)
+                        setState(ChatUiState.Error(result.errorMessage))
                     }
                     TaskResult.Loading -> {
-                        _state.value = ChatUiState.Loading
+                        setState(ChatUiState.Loading)
                     }
                     is TaskResult.Success<List<Chat>> -> {
-                        _state.value = ChatUiState.SuccessFetch
-                        _chats.value = result.data
+                        setState(ChatUiState.SuccessFetchChat(result.data))
                     }
                 }
             }
@@ -38,13 +36,13 @@ class ChatViewModel(
             chatUseCase.sendChat(chat).collect { result ->
                 when (result) {
                     is TaskResult.Error<*> -> {
-                        _state.value = ChatUiState.Error(result.errorMessage)
+                        setState(ChatUiState.Error(result.errorMessage))
                     }
                     TaskResult.Loading -> {
-                        _state.value = ChatUiState.Sending
+                        setState(ChatUiState.Sending)
                     }
                     is TaskResult.Success<*> -> {
-                        _state.value = ChatUiState.SuccessSend
+                        setState(ChatUiState.SuccessSend)
                     }
                 }
             }

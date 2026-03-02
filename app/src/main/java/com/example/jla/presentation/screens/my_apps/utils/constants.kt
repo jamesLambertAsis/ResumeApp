@@ -6,3 +6,7 @@ object LogInResult {
     const val SUCCESS = "Success"
     const val USER_NOT_EXISTS = "User does not exist"
 }
+
+enum class SignUpResult {
+    MOBILE_ALREADY_EXIST, USER_NAME_ALREADY_EXIST, SUCCESS
+}
