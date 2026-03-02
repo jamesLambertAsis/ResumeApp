@@ -7,6 +7,7 @@ import com.example.jla.data.StringUtils
 import com.example.jla.domain.model.User
 import com.example.jla.domain.repository.UserRepository
 import com.example.jla.presentation.screens.my_apps.utils.LogInResult
+import com.example.jla.presentation.screens.my_apps.utils.SignUpResult
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
@@ -34,34 +35,29 @@ class UserRepositoryImpl(db: Firebase) : UserRepository {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun signUp(user: User): String {
-        var result = LogInResult.SUCCESS
+    override suspend fun signUp(user: User): SignUpResult {
 
         for (item in getUserList()) {
             if (StringUtils().decodeFromBase64(item.mobileNo) == user.mobileNo) {
-                result = LogInResult.MOBILE_ALREADY_EXIST
-                break
+                return SignUpResult.MOBILE_ALREADY_EXIST
             } else if (item.userName == user.userName) {
-                result = LogInResult.USER_NAME_ALREADY_EXIST
-                break
+                return SignUpResult.USER_NAME_ALREADY_EXIST
             }
         }
 
-        return result
+        addUser(user)
+        return SignUpResult.SUCCESS
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun logIn(user: User): Boolean {
-        var result = false
-
         for (item in getUserList()) {
             if (StringUtils().decodeFromBase64(item.mobileNo) == user.mobileNo && item.userName == user.userName) {
-                result = true
-                break
+                return true
             }
         }
 
-        return result
+        return false
     }
 
     private suspend fun getUserList(): List<User> {

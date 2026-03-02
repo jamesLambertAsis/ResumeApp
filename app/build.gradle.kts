@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.compose.compiler)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -52,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -61,6 +63,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
 }
 
 dependencies {
@@ -94,5 +98,31 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
 
     implementation (libs.barcode.scanning)
+
+//    implementation("com.google.android.gms:play-services-maps:17.0.0")
+//    implementation("com.google.maps.android:maps-compose:6.12.0")
+//
+//    // Google Maps SDK -- these are here for the data model.  Remove these dependencies and replace
+//    // with the compose versions.
+//    implementation("com.google.android.gms:play-services-maps:18.2.0")
+//    // KTX for the Maps SDK for Android library
+//    implementation("com.google.maps.android:maps-ktx:5.0.0")
+//    // KTX for the Maps SDK for Android Utility Library
+//    implementation("com.google.maps.android:maps-utils-ktx:5.0.0")
+
+    val mapsComposeVersion = "4.4.1"
+    implementation("com.google.maps.android:maps-compose:$mapsComposeVersion")
+    // Google Maps Compose utility library
+    implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
+    // Google Maps Compose widgets library
+    implementation("com.google.maps.android:maps-compose-widgets:$mapsComposeVersion")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 
 }
