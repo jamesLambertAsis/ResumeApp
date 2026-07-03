@@ -44,6 +44,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.tasks.await
 import org.koin.androidx.compose.koinViewModel
 
+@androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapScreen(
@@ -59,6 +60,7 @@ fun MapScreen(
     val clickedLocation = remember { mutableStateOf(LatLng(0.0, 0.0)) }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState = state
     val locationDetails = remember { mutableStateOf(LocationDetails()) }
     val weatherDetails = remember { mutableStateOf(WeatherDetails()) }
 
@@ -67,7 +69,7 @@ fun MapScreen(
     val isWeatherDetailsLoaded = remember { mutableStateOf(false) }
     val isLocationDetailsLoaded = remember { mutableStateOf(false) }
 
-    LaunchedEffect(isMapLoaded.value) {
+    LaunchedEffect(isMapLoaded.value)  {
         if (isMapLoaded.value.not()) {
             return@LaunchedEffect
         }
@@ -239,9 +241,9 @@ fun MapScreen(
 
     }
 
-    when (state) {
+    when (uiState) {
         is MapUiState.Error -> {
-            ShowToast((state as MapUiState.Error).error)
+            ShowToast(uiState.error)
             isWeatherDetailsLoaded.value = true
             isLocationDetailsLoaded.value = true
         }
@@ -257,12 +259,12 @@ fun MapScreen(
         }
 
         is MapUiState.SuccessLocationDetails -> {
-            locationDetails.value = (state as MapUiState.SuccessLocationDetails).data
+            locationDetails.value = uiState.data
             isLocationDetailsLoaded.value = true
         }
 
         is MapUiState.SuccessWeatherDetails -> {
-            weatherDetails.value = (state as MapUiState.SuccessWeatherDetails).data
+            weatherDetails.value = uiState.data
             isWeatherDetailsLoaded.value = true
         }
     }

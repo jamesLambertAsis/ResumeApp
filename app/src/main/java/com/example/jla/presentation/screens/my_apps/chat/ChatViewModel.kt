@@ -2,30 +2,36 @@ package com.example.jla.presentation.screens.my_apps.chat
 
 import com.example.jla.core.BaseViewModel
 import com.example.jla.core.TaskResult
-import com.example.jla.domain.model.Chat
 import com.example.jla.domain.use_case.chat.ChatUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 
 class ChatViewModel(
     private val chatUseCase: ChatUseCase
-): BaseViewModel<ChatUiState>(ChatUiState.Idle) {
+) : BaseViewModel<ChatUiState>(ChatUiState.Idle) {
 
+    var hasConnection = MutableStateFlow(false)
 
     init {
         run {
-            chatUseCase.getChats().distinctUntilChanged().collect { result ->
-                when (result) {
-                    is TaskResult.Error<*> -> {
-                        setState(ChatUiState.Error(result.errorMessage))
-                    }
-                    TaskResult.Loading -> {
-                        setState(ChatUiState.Loading)
-                    }
-                    is TaskResult.Success<List<Chat>> -> {
-                        setState(ChatUiState.SuccessFetchChat(result.data))
-                    }
+            observeChats()
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeChats() {
+        run {
+            hasConnection.flatMapLatest { online ->
+                chatUseCase.getChats(online)
+            }
+            .distinctUntilChanged()
+            .collect { result ->
+            when (result) {
+                is TaskResult.Error<*> -> setState(ChatUiState.Error(result.errorMessage))
+                TaskResult.Loading -> setState(ChatUiState.Loading)
+                is TaskResult.Success -> setState(ChatUiState.SuccessFetchChat(result.data))
                 }
             }
         }
@@ -42,7 +48,7 @@ class ChatViewModel(
                         setState(ChatUiState.Sending)
                     }
                     is TaskResult.Success<*> -> {
-                        setState(ChatUiState.SuccessSend)
+
                     }
                 }
             }
@@ -50,8 +56,11 @@ class ChatViewModel(
     }
 
     fun onEvent(event: ChatEvent) {
-        when(event) {
+        when (event) {
             is ChatEvent.SendChat -> sendChat(event.message)
+            is ChatEvent.UpdateHasConnection -> {
+                hasConnection.value = event.hasConnection
+            }
         }
     }
 

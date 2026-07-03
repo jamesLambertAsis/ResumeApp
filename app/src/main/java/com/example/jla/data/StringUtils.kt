@@ -14,7 +14,6 @@ class StringUtils {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun decodeFromBase64(base64String: String): String {
-        LoremIpsum().toString()
         val bytes = java.util.Base64.getDecoder().decode(base64String)
         return String(bytes)
     }

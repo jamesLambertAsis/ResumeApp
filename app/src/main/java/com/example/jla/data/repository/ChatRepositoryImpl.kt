@@ -1,13 +1,11 @@
 package com.example.jla.data.repository
 
-import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import com.example.jla.core.TaskResult
 import com.example.jla.data.remote.model.ApiResponse
 import com.example.jla.domain.model.Chat
 import com.example.jla.domain.repository.ChatRepository
+import com.example.jla.presentation.utils.NetworkMonitor
+
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.TimeoutCancellationException
@@ -17,7 +15,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
 
-class ChatRepositoryImpl(db: Firebase) : ChatRepository {
+class ChatRepositoryImpl(
+    db: Firebase
+) : ChatRepository {
 
     private val firestoreDb = db.firestore
     private val chatDocs = firestoreDb.collection("Chats")
@@ -25,7 +25,6 @@ class ChatRepositoryImpl(db: Firebase) : ChatRepository {
     override fun getChats(hasConnection: Boolean): Flow<TaskResult<List<Chat>>> = callbackFlow {
 
         trySend(TaskResult.Loading)
-
         val listener = chatDocs
             .orderBy("timeSent")
             .addSnapshotListener { querySnapshot, error ->

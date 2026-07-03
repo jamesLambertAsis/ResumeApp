@@ -4,4 +4,6 @@ sealed class ChatEvent {
 
     data class SendChat(val message: String): ChatEvent()
 
+    data class UpdateHasConnection(val hasConnection: Boolean): ChatEvent()
+
 }

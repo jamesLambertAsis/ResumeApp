@@ -17,8 +17,8 @@ fun ChatContent(chat: Chat) {
             ChatItem(
                 modifier = Modifier.fillMaxWidth(),
                 alignment = Alignment.End,
-                chat = chat, isOwnChat =
-                chat.userName == ChatUtils.loggedInUserName
+                chat = chat,
+                isOwnChat = chat.userName == ChatUtils.loggedInUserName
             )
         } else {
             ChatItem(

@@ -13,8 +13,7 @@ open class BaseViewModel<T>(
     val initialState: T
 ): ViewModel() {
 
-    private var _state = MutableStateFlow(initialState)
-
+    val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
     fun setState(newState: T){
