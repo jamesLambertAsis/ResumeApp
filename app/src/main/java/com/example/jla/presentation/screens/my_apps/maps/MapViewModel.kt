@@ -98,6 +98,8 @@ class MapViewModel(
         longitude: Double,
     ): LocationDetails =
         suspendCancellableCoroutine { task ->
+
+
             try {
                 getFromLocation(
                     latitude, longitude, 1

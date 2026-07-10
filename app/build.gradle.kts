@@ -25,6 +25,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val mapsApiKey = project.findProperty("MAPS_API_KEY")?.toString()
+            ?: System.getenv("MAPS_API_KEY")
+            ?: ""
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
 
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
