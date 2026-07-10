@@ -1,6 +1,7 @@
 package com.example.jla.presentation.navigation.nav
 
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -16,12 +17,11 @@ import com.example.jla.presentation.screens.skill_sets.SkillSetScreen
 import com.example.jla.presentation.screens.splash_screen.SplashScreen
 import com.example.jla.presentation.utils.HomeOptions
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.navGraphApp(navController: NavHostController) {
 
 
     composable<AppNavigationItem.HomeScreen> {
-
-        Log.d("xxx-->", "navGraphApp: ")
 
         HomeScreen(
             navController

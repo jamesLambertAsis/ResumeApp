@@ -6,4 +6,6 @@ import com.example.jla.domain.model.WeatherDetails
 interface MapRepository {
     suspend fun getWeatherDetails(latitude: Double, longitude: Double): ApiResponse<WeatherDetails, Exception>
 
+    suspend fun getGenerativeAiResponse(prompt: String): ApiResponse<String, Exception>
+
 }

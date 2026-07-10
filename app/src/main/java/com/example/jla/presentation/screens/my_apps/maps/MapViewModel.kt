@@ -6,7 +6,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.jla.core.BaseViewModel
 import com.example.jla.core.TaskResult
-import com.example.jla.data.remote.model.ApiResponse
 import com.example.jla.domain.model.LocationDetails
 import com.example.jla.domain.model.WeatherDetails
 import com.example.jla.domain.use_case.map.MapUseCase
@@ -19,20 +18,26 @@ import kotlin.coroutines.resumeWithException
 
 class MapViewModel(
     private val mapUseCase: MapUseCase
-): BaseViewModel<MapUiState>(MapUiState.Idle) {
+) : BaseViewModel<MapUiState>(MapUiState.Idle) {
 
-    fun onEvent(event: MapEvent){
+    fun onEvent(event: MapEvent) {
         when (event) {
             is MapEvent.GetLocationDetails -> {
                 run {
-                    getLocationDetails(event.latitude, event.longitude, event.context).collect { result ->
+                    getLocationDetails(
+                        event.latitude,
+                        event.longitude,
+                        event.context
+                    ).collect { result ->
                         when (result) {
                             is TaskResult.Error<*> -> {
                                 _state.value = MapUiState.Error(result.errorMessage)
                             }
+
                             TaskResult.Loading -> {
                                 _state.value = MapUiState.LoadingLocationDetails
                             }
+
                             is TaskResult.Success<LocationDetails> -> {
                                 _state.value = MapUiState.SuccessLocationDetails(result.data)
                             }
@@ -43,16 +48,43 @@ class MapViewModel(
 
             is MapEvent.GetWeatherDetails -> {
                 run {
-                    mapUseCase.getWeatherDetails(event.latitude, event.longitude).collect { result ->
+                    mapUseCase.getWeatherDetails(event.latitude, event.longitude)
+                        .collect { result ->
+                            when (result) {
+                                is TaskResult.Error<*> -> {
+                                    _state.value = MapUiState.Error(result.errorMessage)
+                                }
+
+                                TaskResult.Loading -> {
+                                    _state.value = MapUiState.LoadingWeatherDetails
+                                }
+
+                                is TaskResult.Success<WeatherDetails> -> {
+                                    _state.value = MapUiState.SuccessWeatherDetails(result.data)
+                                }
+                            }
+                        }
+                }
+            }
+
+            is MapEvent.GetAiAnalysis -> {
+                run {
+                    mapUseCase.getWeatherAiAnalysis(
+                        "Your a weather forecaster give suggestion to weather using all of this data and" +
+                                " state openmeteo api is the source of weather details also use this ${event.weatherDetails.formattedTime} as you great in the first sentence" +
+                                "${event.locationDetails.locality} ${event.weatherDetails.temperature}"
+                    ).collect { result ->
                         when (result) {
                             is TaskResult.Error<*> -> {
-                                _state.value = MapUiState.Error(result.errorMessage)
+                                _state.value = MapUiState.LocationAnalysisError(result.errorMessage)
                             }
+
                             TaskResult.Loading -> {
-                                _state.value = MapUiState.LoadingWeatherDetails
+                                _state.value = MapUiState.LoadingAiResponse
                             }
-                            is TaskResult.Success<WeatherDetails> -> {
-                                _state.value = MapUiState.SuccessWeatherDetails(result.data)
+
+                            is TaskResult.Success<String> -> {
+                                _state.value = MapUiState.LocationAnalysis(event.weatherDetails.formattedTime+"\n"+result.data)
                             }
                         }
                     }
@@ -61,26 +93,13 @@ class MapViewModel(
         }
     }
 
-    private fun getLocationDetails(
-        latitude: Double,
-        longitude: Double,
-        context: Context
-    ): Flow<TaskResult<LocationDetails>> = flow {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        try {
-            val locationDetails = geocoder.getLocationDetail(latitude, longitude)
-            emit(TaskResult.Success(locationDetails))
-        } catch (e: Exception) {
-            emit(TaskResult.Error(errorMessage = e.message ?: "Unknown Error"))
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     suspend fun Geocoder.getLocationDetail(
         latitude: Double,
         longitude: Double,
     ): LocationDetails =
         suspendCancellableCoroutine { task ->
+
+
             try {
                 getFromLocation(
                     latitude, longitude, 1
@@ -109,4 +128,18 @@ class MapViewModel(
                 task.resumeWithException(Exception(e))
             }
         }
+
+    private fun getLocationDetails(
+        latitude: Double,
+        longitude: Double,
+        context: Context
+    ): Flow<TaskResult<LocationDetails>> = flow {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        try {
+            val locationDetails = geocoder.getLocationDetail(latitude, longitude)
+            emit(TaskResult.Success(locationDetails))
+        } catch (e: Exception) {
+            emit(TaskResult.Error(errorMessage = e.message ?: "Unknown Error"))
+        }
+    }
 }

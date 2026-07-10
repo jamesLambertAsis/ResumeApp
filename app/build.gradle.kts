@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -24,6 +25,24 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val mapsApiKey = project.findProperty("MAPS_API_KEY")?.toString()
+            ?: System.getenv("MAPS_API_KEY")
+            ?: ""
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+        }
+
+        val apiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
+
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"$apiKey\""
+        )
     }
 
     buildTypes {
@@ -48,7 +67,7 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8) // Or JvmTarget.JVM_11, JvmTarget.JVM_17, etc.
+            jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
     buildFeatures {
@@ -99,30 +118,24 @@ dependencies {
 
     implementation (libs.barcode.scanning)
 
-//    implementation("com.google.android.gms:play-services-maps:17.0.0")
-//    implementation("com.google.maps.android:maps-compose:6.12.0")
-//
-//    // Google Maps SDK -- these are here for the data model.  Remove these dependencies and replace
-//    // with the compose versions.
-//    implementation("com.google.android.gms:play-services-maps:18.2.0")
-//    // KTX for the Maps SDK for Android library
-//    implementation("com.google.maps.android:maps-ktx:5.0.0")
-//    // KTX for the Maps SDK for Android Utility Library
-//    implementation("com.google.maps.android:maps-utils-ktx:5.0.0")
-
-    val mapsComposeVersion = "4.4.1"
-    implementation(libs.maps.compose)
     // Google Maps Compose utility library
     implementation(libs.maps.compose.utils)
+    implementation(libs.maps.compose)
+
     // Google Maps Compose widgets library
     implementation(libs.maps.compose.widgets)
 
     implementation(libs.play.services.location)
 
+    //retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.generativeai)
+
 
 
 }
