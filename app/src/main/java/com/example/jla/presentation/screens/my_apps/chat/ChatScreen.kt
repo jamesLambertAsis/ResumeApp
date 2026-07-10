@@ -175,9 +175,7 @@ fun Chat(
                 )
             }
         }
-        LaunchedEffect(uiState) {
-            Log.d("xxx-->", "Chat: "+uiState)
-        }
+
         when(uiState) {
             is ChatUiState.Loading -> {
                 CustomLoadingDialog()

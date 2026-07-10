@@ -1,20 +1,22 @@
+@file:Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
+
 package com.example.jla.presentation.screens.my_apps.maps
 
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,13 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jla.domain.model.LocationDetails
 import com.example.jla.domain.model.WeatherDetails
 import com.example.jla.presentation.screens.my_apps.composable.CustomLoadingDialog
 import com.example.jla.presentation.screens.my_apps.utils.ShowToast
-import com.example.jla.presentation.screens.my_apps.utils.WeatherUtils
+import com.example.jla.ui.theme.RoyalBlue
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
@@ -69,7 +70,21 @@ fun MapScreen(
     val isWeatherDetailsLoaded = remember { mutableStateOf(false) }
     val isLocationDetailsLoaded = remember { mutableStateOf(false) }
 
-    LaunchedEffect(isMapLoaded.value)  {
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(isWeatherDetailsLoaded.value, isLocationDetailsLoaded.value) {
+        if (isLocationDetailsLoaded.value && isWeatherDetailsLoaded.value) {
+            viewModel.onEvent(
+                MapEvent.GetAiAnalysis(
+                    locationDetails = locationDetails.value,
+                    weatherDetails = weatherDetails.value
+                )
+            )
+        }
+    }
+
+
+    LaunchedEffect(isMapLoaded.value) {
         if (isMapLoaded.value.not()) {
             return@LaunchedEffect
         }
@@ -97,7 +112,7 @@ fun MapScreen(
         }
     }
 
-    Box(
+    Column(
         Modifier
             .fillMaxSize()
     ) {
@@ -105,9 +120,10 @@ fun MapScreen(
             CustomLoadingDialog()
         }
         GoogleMap(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize(),
             onMapLoaded = {
-                Log.d("xxx-->", "MapScreen: map loaded")
                 isMapLoaded.value = true
             },
             cameraPositionState = cameraPositionState,
@@ -147,98 +163,39 @@ fun MapScreen(
             return
         }
         Column(
-            Modifier
-                .wrapContentWidth()
-                .align(Alignment.BottomStart)
-                .zIndex(100f)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Country: ", color = Color.Black)
-                if (isLocationDetailsLoaded.value.not()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(14.dp)
-                    )
-                } else {
-                    locationDetails.value.countryName?.let { Text(it, color = Color.Black) }
-                }
+            modifier = Modifier
+                .weight(.3f)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
 
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Locality: ", color = Color.Black)
-                if (isLocationDetailsLoaded.value.not()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(14.dp)
-                    )
-                } else {
+        ) {
+            when (uiState) {
+                is MapUiState.LocationAnalysis -> {
                     Text(
-                        "${locationDetails.value.admin}, ${locationDetails.value.locality}",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp),
+                        text = uiState.analysis,
+                        style = MaterialTheme.typography.titleMedium,
                         color = Color.Black
                     )
                 }
-
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Time: ", color = Color.Black)
-                if (isWeatherDetailsLoaded.value.not()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(14.dp)
-                    )
-                } else {
-                    if (weatherDetails.value.time.isNotEmpty()) {
-                        Log.d("xxx-->", "MapScreen: " + weatherDetails.value.time)
-                        Log.d("xxx-->", "MapScreen: " + weatherDetails.value.timeZone)
-                        Text(
-                            weatherDetails.value.formatOpenMeteoTime(
-                                weatherDetails.value.time,
-                                weatherDetails.value.timeZone
-                            ), color = Color.Black
-                        )
-                    }
-                }
-
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Temperature: ", color = Color.Black)
-                if (isWeatherDetailsLoaded.value.not()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(14.dp)
-                    )
-                } else {
-                    Text("${weatherDetails.value.temperature}℃", color = Color.Black)
-                }
-
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Windspeed: ", color = Color.Black)
-                if (isWeatherDetailsLoaded.value.not()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(14.dp)
-                    )
-                } else {
-                    Text("${weatherDetails.value.windSpeed}", color = Color.Black)
-                }
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Weather Code: ", color = Color.Black)
-                if (isWeatherDetailsLoaded.value.not()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(14.dp)
-                    )
-                } else {
+                is MapUiState.LoadingAiResponse -> CircularProgressIndicator(color = RoyalBlue)
+                is MapUiState.LocationAnalysisError -> {
                     Text(
-                        "${weatherDetails.value.weatherCode} | ${
-                            WeatherUtils.interpretWeatherByCode(
-                                weatherDetails.value.weatherCode
-                            )
-                        }", color = Color.Black
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp),
+                        text = uiState.error,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Black
                     )
                 }
-
             }
         }
-
     }
 
     when (uiState) {

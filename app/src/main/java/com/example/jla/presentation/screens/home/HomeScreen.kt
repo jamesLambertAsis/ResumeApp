@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +29,9 @@ import androidx.navigation.NavController
 import com.example.jla.R
 import com.example.jla.presentation.screens.home.composable.BottomItemOptions
 import com.example.jla.ui.theme.ShadeBlue
+import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -36,6 +39,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navigate: (String) -> Unit,
 ) {
+
     LaunchedEffect(Unit) {
         snapshotFlow { }
             .drop(1)
