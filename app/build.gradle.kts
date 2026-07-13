@@ -36,7 +36,9 @@ android {
             localProperties.load(localPropertiesFile.inputStream())
         }
 
-        val apiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
+        val apiKey = localProperties.getProperty("GEMINI_API_KEY")
+            ?: System.getenv("GEMINI_API_KEY")
+            ?: ""
 
         buildConfigField(
             "String",
