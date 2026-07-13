@@ -132,14 +132,6 @@ fun MyApps(
             ) {
                 toWebViewScreen()
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            MyAppsItem(
-                item = "A.I",
-                icon = painterResource(id = R.drawable.robot),
-                modifier = Modifier.weight(1f)
-            )
             Spacer(modifier = Modifier.height(16.dp))
             MyAppsItem(
                 item = "World Clock",
