@@ -44,9 +44,6 @@ class MapRepositoryImpl(
         } catch (e: Exception) {
             ApiResponse.Error(e, errorMessage = e.message ?: "Unknown Error")
         }
-
-
     }
-
 
 }
