@@ -2,6 +2,17 @@ package com.example.jla.presentation.screens.skill_sets.composable
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,10 +29,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +64,46 @@ fun SkillSetItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
         SkillSet.DATABASE -> SkillDatabaseList
         else -> SkillToolList
     }
+    val rotation by animateFloatAsState(
+        targetValue = if (isSelected) 360f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "BoxRotation"
+    )
+    val caretRotation by animateFloatAsState(
+        targetValue = if (isSelected) 90f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "BoxRotation"
+    )
+    val animatedBoxSize by animateDpAsState(
+        targetValue = if (isSelected) 80.dp else 60.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow // Low stiffness makes it move slower
+        ),
+        label = "BoxSize"
+    )
+    val animatedIconSize by animateDpAsState(
+        targetValue = if (isSelected) 50.dp else 30.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "BoxSize"
+    )
+    val animatedTextSize by animateFloatAsState(
+        targetValue = if (isSelected) 20f else 16f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "BoxSize"
+    )
     Column(
         Modifier.fillMaxWidth()
     ) {
@@ -67,12 +120,15 @@ fun SkillSetItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
                 modifier = Modifier
                     .clip(CircleShape)
                     .background(ShadeBlue)
-                    .size(if (isSelected) 80.dp else 60.dp)
+                    .size(animatedBoxSize)
+                    .graphicsLayer(
+                        rotationZ = rotation
+                    )
             ) {
                 Icon(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(if (isSelected) 50.dp else 30.dp),
+                        .size(animatedIconSize),
                     painter = painterResource(icon),
                     tint = if (ThemeUtils.isDarkMode()) Color.Black else Color.White,
                     contentDescription = null
@@ -89,16 +145,42 @@ fun SkillSetItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
             Text(
                 text = text,
                 fontWeight = FontWeight.Bold,
-                fontSize = if (isSelected) 20.sp else 16.sp
+                fontSize = animatedTextSize.sp
             )
 
             Icon(
-                painter = if(isSelected) painterResource(R.drawable.ic_caret_down) else painterResource(R.drawable.ic_caret_right),
+                modifier = Modifier.graphicsLayer(
+                    rotationZ = caretRotation
+                ),
+                painter = painterResource(R.drawable.ic_caret_right),
                 contentDescription = null
             )
 
         }
-        AnimatedVisibility(visible = isSelected) {
+        AnimatedVisibility(
+            visible = isSelected,
+            enter = fadeIn(animationSpec = tween(500)) +
+                    expandVertically(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    ) +
+                    slideInVertically(
+                        spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    ),
+            exit = fadeOut(animationSpec = tween(500)) +
+                    shrinkVertically() +
+                    slideOutVertically(
+                        spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    )
+        ) {
             Column(
                 Modifier
                     .fillMaxWidth()
