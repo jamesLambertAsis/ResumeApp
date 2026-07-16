@@ -19,6 +19,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,12 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jla.R
 import com.example.jla.presentation.screens.my_apps.composable.DialogChatLogIn
 import com.example.jla.presentation.screens.my_apps.composable.MyAppsItem
-import com.example.jla.presentation.screens.my_apps.utils.ChatUtils
-import com.example.jla.presentation.screens.my_apps.utils.ShowToast
 import com.example.jla.presentation.screens.my_apps.utils.isLocationEnabled
 import org.koin.androidx.compose.koinViewModel
 
@@ -167,6 +165,15 @@ fun MyApps(
                     askGpsEnable.value = false
                 }) {
                     Text("Go to Settings")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        askGpsEnable.value = false
+                    }
+                ) {
+                    Text("Cancel")
                 }
             }
         )

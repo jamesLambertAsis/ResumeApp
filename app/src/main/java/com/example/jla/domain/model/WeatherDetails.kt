@@ -14,7 +14,8 @@ data class WeatherDetails (
     val windSpeed: Float = 0f,
     val time: String = "",
     val formattedTime: String = formatOpenMeteoTime(time = time, timeZone),
-    val timeToDisplay: String = ""
+    val timeToDisplay: String = "",
+    val weatherCodeDescription: String = getWeatherCodeDescription(weatherCode)
 ) {
 
     companion object {
@@ -31,8 +32,27 @@ data class WeatherDetails (
             val deviceTime = zoned.withZoneSameInstant(ZoneId.systemDefault())
 
             return deviceTime.format(
-                DateTimeFormatter.ofPattern("dd/MMMM/yyyy hh:mm a")
+                DateTimeFormatter.ofPattern("MMMM dd, YYYY hh:mm a")
             )
+        }
+
+        fun getWeatherCodeDescription(weatherCode: Int): String {
+            return when(weatherCode) {
+                0 -> "Clear Sky"
+                1, 2, 3 -> "Mainly Clear, Partly Cloudy, Overcast"
+                45, 48 -> "Fog and Dense Fog"
+                51, 53, 55 -> "Drizzle: Light, Moderate, and Dense Intensity"
+                56, 57 -> "Freezing Drizzle: Light and Dense Intensity"
+                61, 63, 65 -> "Rain: Slight, Moderate and Heavy Intensity"
+                66, 67 -> "Freezing Rain: Light and Heavy Intensity"
+                71, 73, 75 -> "Snowfall: Slight, Moderate, and Heavy Intensity"
+                77 -> "Snow Grains"
+                80, 81, 82 -> "Rain Showers: Slight, Moderate, and Heavy"
+                85, 86 -> "Snow Showers"
+                95 -> "Thunderstorm: Slight or Moderate"
+                96, 99 -> "Thunderstorm with Slight or Heavy Hail"
+                else -> "Unknown"
+            }
         }
     }
 

@@ -39,7 +39,9 @@ fun NavGraphBuilder.navGraphApp(navController: NavHostController) {
         }
     }
     composable<AppNavigationItem.SkillSetsScreen> {
-        SkillSetScreen()
+        SkillSetScreen(){
+            navController.popBackStack()
+        }
     }
     composable<AppNavigationItem.ResumeScreen> {
         ResumeScreen {
@@ -74,7 +76,9 @@ fun NavGraphBuilder.navGraphApp(navController: NavHostController) {
         }
     }
     composable<AppNavigationItem.MapScreen> {
-        MapScreen()
+        MapScreen(){
+            navController.popBackStack()
+        }
     }
 
 }

@@ -26,12 +26,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.jla.R
+import com.example.jla.presentation.screens.composables.BackButton
+import com.example.jla.presentation.screens.skill_sets.composable.RowOfBlackLightBulbs
 import com.example.jla.presentation.screens.skill_sets.composable.SkillSetListOption
 import com.example.jla.ui.theme.ShadeBlue
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun SkillSetScreen(modifier: Modifier = Modifier) {
+fun SkillSetScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit
+) {
+
     Box(Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -50,19 +56,28 @@ fun SkillSetScreen(modifier: Modifier = Modifier) {
                         .fillMaxHeight(.65f)
                 )
                 Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(alignment = Alignment.BottomCenter),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    RowOfBlackLightBulbs()
+                }
+                Box(
                     modifier = modifier
                         .clip(shape = CircleShape)
                         .background(color = Color.White, shape = CircleShape)
                         .border(4.dp, color = Color(ShadeBlue.value), shape = CircleShape)
                         .align(alignment = Alignment.BottomCenter)
-                        .size(180.dp)
+                        .size(200.dp)
                         .zIndex(1f)
                 ) {
+
                     Icon(
                         painter = painterResource(id = R.drawable.ic_brain),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(140.dp)
                             .align(Alignment.Center)
                             .clickable(
                                 indication = null,
@@ -83,6 +98,12 @@ fun SkillSetScreen(modifier: Modifier = Modifier) {
                 Spacer(Modifier.height(20.dp))
                 SkillSetListOption()
             }
+        }
+
+        BackButton(
+            Modifier.align(Alignment.BottomEnd)
+        ) {
+            onBack()
         }
     }
 }

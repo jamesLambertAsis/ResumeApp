@@ -4,13 +4,18 @@ package com.example.jla.presentation.screens.my_apps.maps
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -39,11 +44,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.jla.R
 import com.example.jla.domain.model.LocationDetails
 import com.example.jla.domain.model.WeatherDetails
 import com.example.jla.presentation.screens.my_apps.composable.CustomLoadingDialog
 import com.example.jla.presentation.screens.my_apps.utils.ShowToast
-import com.example.jla.ui.theme.IndigoBlue
+import com.example.jla.presentation.utils.markdownToAnnotatedString
 import com.example.jla.ui.theme.RoyalBlue
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -64,7 +70,8 @@ import org.koin.androidx.compose.koinViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapScreen(
-    viewModel: MapViewModel = koinViewModel()
+    viewModel: MapViewModel = koinViewModel(),
+    onBack: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -133,79 +140,89 @@ fun MapScreen(
         Modifier
             .fillMaxSize()
     ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .zIndex(1f) // Ensures the shadow is drawn over the map
+                .shadow(
+                    elevation = 20.dp,
+                    shape = RoundedCornerShape(0.dp), // Rectangular shadow for the top bar
+                    clip = false
+                )
+                .background(Color.White),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .padding(4.dp)
+                    .clickable(
+                        interactionSource = null,
+                        indication = null
+                    ) {
+                        onBack()
+                    },
+                tint = Color.Black,
+                painter = painterResource(R.drawable.ic_arrow_back),
+                contentDescription = null
+            )
+            Spacer(Modifier.width(14.dp))
+            TextField(
+                value = searchText.value,
+                onValueChange = { searchText.value = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                placeholder = { Text("Search location...", color = Color.Gray) },
+                singleLine = true,
+                trailingIcon = {
+                    IconButton(onClick = {
+                        viewModel.onEvent(MapEvent.OnSearchLocationName(searchText.value, context))
+                    }) {
+                        Icon(
+                            painter = painterResource(id = android.R.drawable.ic_menu_search),
+                            contentDescription = "Search",
+                            tint = Color.Black
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        if (searchText.value.isNotBlank()) {
+                            viewModel.onEvent(
+                                MapEvent.OnSearchLocationName(
+                                    searchText.value,
+                                    context
+                                )
+                            )
+                        }
+                    }
+                ),
+                colors = TextFieldDefaults.colors(
+                    // Remove the underline
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+
+                    cursorColor = RoyalBlue,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
+            )
+        }
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter
-        ){
+        ) {
             if (isMapLoaded.value.not()) {
                 CustomLoadingDialog()
-            }
-            Row(
-                Modifier
-                    .padding(top = 24.dp)
-                    .fillMaxWidth(.9f)
-                    .zIndex(10f)
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(24.dp),
-                        clip = false // Ensures the shadow isn't cut off
-                    )
-            ) {
-                TextField(
-                    value = searchText.value,
-                    onValueChange = { searchText.value = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Color.White,
-                            RoundedCornerShape(24.dp)
-                        ),
-                    placeholder = { Text("Search location...", color = Color.Gray) },
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = android.R.drawable.ic_menu_search),
-                            contentDescription = "Search",
-                            tint = IndigoBlue
-                        )
-                    },
-                    trailingIcon = {
-                        if (searchText.value.isNotEmpty()) {
-                            IconButton(onClick = {
-                                viewModel.onEvent(MapEvent.OnSearchLocationName(searchText.value, context))
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = android.R.drawable.ic_menu_send),
-                                    contentDescription = "Submit",
-                                    tint = IndigoBlue
-                                )
-                            }
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            if (searchText.value.isNotBlank()) {
-                                viewModel.onEvent(MapEvent.OnSearchLocationName(searchText.value, context))
-                            }
-                        }
-                    ),
-                    colors = TextFieldDefaults.colors(
-                        // Remove the underline
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-
-                        cursorColor = RoyalBlue,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black
-                    )
-                )
             }
             GoogleMap(
                 modifier = Modifier
@@ -263,11 +280,12 @@ fun MapScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(10.dp),
-                        text = uiState.analysis,
+                        text = uiState.analysis.markdownToAnnotatedString(),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.Black
                     )
                 }
+
                 is MapUiState.LocationAnalysisError -> {
                     Text(
                         modifier = Modifier
@@ -282,13 +300,18 @@ fun MapScreen(
                 else -> {
                     if (uiState == MapUiState.LoadingLocationDetails ||
                         uiState == MapUiState.LoadingWeatherDetails
-                        || uiState == MapUiState.LoadingAiResponse) {
+                        || uiState == MapUiState.LoadingAiResponse
+                    ) {
                         Column(
                             Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             CircularProgressIndicator(color = RoyalBlue)
-                            Text(detailsMsg)
+                            Text(
+                                detailsMsg,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Black,
+                            )
                         }
                     }
                 }
@@ -307,6 +330,7 @@ fun MapScreen(
         MapUiState.Loading -> {
             CustomLoadingDialog()
         }
+
         MapUiState.LoadingLocationDetails -> {
             isLocationDetailsLoaded.value = false
             detailsMsg = "Getting location details"
@@ -318,7 +342,7 @@ fun MapScreen(
         }
 
         MapUiState.LoadingAiResponse -> {
-            detailsMsg = "Generating A.I response"
+            detailsMsg = "Gemini is generating insights for ${locationDetails.value.locality}"
         }
 
         is MapUiState.SuccessLocationDetails -> {

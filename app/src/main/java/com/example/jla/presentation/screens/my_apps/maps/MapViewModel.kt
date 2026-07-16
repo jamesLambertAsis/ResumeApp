@@ -59,7 +59,7 @@ class MapViewModel(
                     mapUseCase.getWeatherAiAnalysis(
                         "Your a weather forecaster give suggestion to weather using all of this data and" +
                                 "state openmeteo api is the source of weather details and what is your name that's gemini AI also use this ${event.weatherDetails.formattedTime} as you great in the first sentence" +
-                                "${event.locationDetails.locality} ${event.weatherDetails.temperature}"
+                                "${event.locationDetails.locality} ${event.weatherDetails.weatherCodeDescription} ${event.weatherDetails.temperature}"
                     ).collect { result ->
                         when (result) {
                             is TaskResult.Error<*> -> {
