@@ -1,6 +1,5 @@
 package com.example.jla.presentation.screens.my_apps.maps
 
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -21,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -48,6 +47,7 @@ import com.example.jla.R
 import com.example.jla.domain.model.LocationDetails
 import com.example.jla.domain.model.WeatherDetails
 import com.example.jla.presentation.screens.my_apps.composable.CustomLoadingDialog
+import com.example.jla.presentation.screens.my_apps.maps.composable.ProgressStepsIndicator
 import com.example.jla.presentation.screens.my_apps.utils.ShowToast
 import com.example.jla.presentation.utils.markdownToAnnotatedString
 import com.example.jla.ui.theme.RoyalBlue
@@ -62,6 +62,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.tasks.await
 import org.koin.androidx.compose.koinViewModel
 
@@ -96,6 +97,8 @@ fun MapScreen(
     val scrollState = rememberScrollState()
     val searchText = remember { mutableStateOf("") }
 
+    var step = LOADING_MAP
+
     LaunchedEffect(isWeatherDetailsLoaded.value, isLocationDetailsLoaded.value) {
         if (isLocationDetailsLoaded.value && isWeatherDetailsLoaded.value) {
             viewModel.onEvent(
@@ -108,32 +111,33 @@ fun MapScreen(
     }
 
 
-    LaunchedEffect(isMapLoaded.value) {
-        if (isMapLoaded.value.not()) {
-            return@LaunchedEffect
-        }
-        val location = client.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            CancellationTokenSource().token
-        ).await()
-        if (location != null) {
-            userLocation.value = LatLng(location.latitude, location.longitude)
-            cameraPositionState.position =
-                CameraPosition.fromLatLngZoom(userLocation.value, 20f)
-            viewModel.onEvent(
-                MapEvent.GetWeatherDetails(
-                    userLocation.value.latitude,
-                    userLocation.value.longitude
-                )
-            )
-            viewModel.onEvent(
-                MapEvent.GetLocationDetails(
-                    userLocation.value.latitude,
-                    userLocation.value.longitude,
-                    context
-                )
-            )
-        }
+    LaunchedEffect(Unit) {
+        snapshotFlow { isMapLoaded.value }
+            .filter { it }
+            .collect {
+                val location = client.getCurrentLocation(
+                    Priority.PRIORITY_HIGH_ACCURACY,
+                    CancellationTokenSource().token
+                ).await()
+                if (location != null) {
+                    userLocation.value = LatLng(location.latitude, location.longitude)
+                    cameraPositionState.position =
+                        CameraPosition.fromLatLngZoom(userLocation.value, 20f)
+                    viewModel.onEvent(
+                        MapEvent.GetWeatherDetails(
+                            userLocation.value.latitude,
+                            userLocation.value.longitude
+                        )
+                    )
+                    viewModel.onEvent(
+                        MapEvent.GetLocationDetails(
+                            userLocation.value.latitude,
+                            userLocation.value.longitude,
+                            context
+                        )
+                    )
+                }
+            }
     }
 
     Column(
@@ -229,6 +233,7 @@ fun MapScreen(
                     .fillMaxSize(),
                 onMapLoaded = {
                     isMapLoaded.value = true
+                    step = LOADING_LOCATION
                 },
                 cameraPositionState = cameraPositionState,
                 onMapClick = { latLng ->
@@ -298,22 +303,13 @@ fun MapScreen(
                 }
 
                 else -> {
-                    if (uiState == MapUiState.LoadingLocationDetails ||
-                        uiState == MapUiState.LoadingWeatherDetails
-                        || uiState == MapUiState.LoadingAiResponse
-                    ) {
-                        Column(
-                            Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(color = RoyalBlue)
-                            Text(
-                                detailsMsg,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Black,
-                            )
-                        }
+                    if (isLocationDetailsLoaded.value) {
+                        step = LOADING_WEATHER
                     }
+                    if (isWeatherDetailsLoaded.value) {
+                        step = LOADING_GEMINI_RESPONSE
+                    }
+                    ProgressStepsIndicator(step = step, msg = detailsMsg)
                 }
             }
         }
@@ -333,12 +329,12 @@ fun MapScreen(
 
         MapUiState.LoadingLocationDetails -> {
             isLocationDetailsLoaded.value = false
-            detailsMsg = "Getting location details"
+            detailsMsg = "Loading Location"
         }
 
         MapUiState.LoadingWeatherDetails -> {
             isWeatherDetailsLoaded.value = false
-            detailsMsg = "Getting weather details"
+            detailsMsg = "Loading Weather"
         }
 
         MapUiState.LoadingAiResponse -> {
